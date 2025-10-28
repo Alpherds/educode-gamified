@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-const langs = ['Python', 'JavaScript', 'Java', 'C', 'C++']
+const langs = ['Python', 'Java', 'C++']
 </script>
 
 <style scoped>
