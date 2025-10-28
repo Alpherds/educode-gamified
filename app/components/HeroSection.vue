@@ -3,7 +3,7 @@
     <v-icon size="64" color="secondary">mdi-code-tags</v-icon>
 
     <h1 class="display-large font-weight-extrabold my-4">
-      Code, Compile, Have <span class="text-gradient">Fun</span>
+      Code, Compile, and Have <span class="text-gradient">Fun</span>
     </h1>
 
     <p class="text-subtitle-1 mb-8">
