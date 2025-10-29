@@ -118,7 +118,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const username = ref('Alpher')
+const username = ref('Mark')
 const userXP = ref(860)
 const userLevel = ref(4)
 const hearts = ref(5)
