@@ -126,7 +126,7 @@ const leaderboard = ref([
   { name: 'Elena', xp: 1400 },
   { name: 'Jace', xp: 1200 },
   { name: 'Mia', xp: 1000 },
-  { name: 'Alpher', xp: 860 },
+  { name: 'Mark', xp: 860 },
 ])
 const userRank = ref(4)
 
