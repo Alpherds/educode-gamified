@@ -10,7 +10,7 @@
       Start coding right away with EduCode — your cloud-based interactive IDE built for learning.
     </p>
 
-    <v-btn color="secondary" size="large" rounded="xl" class="px-8">
+    <v-btn color="secondary" size="large" rounded="xl" class="px-8" @click="goLogin">
       <v-icon left>mdi-arrow-right</v-icon> Start Coding
     </v-btn>
 
@@ -24,4 +24,6 @@
 
 <script setup lang="ts">
 const langs = ['Python', 'Java', 'C++']
+const router = useRouter()
+const goLogin = () => router.push('/login')
 </script>

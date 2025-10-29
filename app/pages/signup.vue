@@ -1,15 +1,15 @@
 <template>
-  <v-app class="login-page">
-    <!-- Glowing Background -->
+  <v-app class="signup-page">
+    <!-- Glowing Animated Background -->
     <div class="glow-bg">
       <div class="glow-ball red"></div>
       <div class="glow-ball purple"></div>
     </div>
 
-    <!-- Scrollable Content -->
-    <div class="login-scroll-wrapper">
+    <!-- Scrollable Wrapper -->
+    <div class="signup-scroll-wrapper">
       <v-container class="d-flex flex-column align-center justify-center px-4 py-10">
-        <v-card class="pa-6 pa-sm-8 rounded-xl login-card mx-auto" elevation="10">
+        <v-card class="pa-6 pa-sm-8 rounded-xl signup-card mx-auto" elevation="10">
           <!-- Logo + Title -->
           <div class="text-center mb-6">
             <v-avatar
@@ -23,32 +23,21 @@
             </v-avatar>
 
             <h2 class="text-h5 font-weight-bold">
-              Online IDE <span class="text-gradient">Pro</span>
+              Create your <span class="text-gradient">EduCode</span> account
             </h2>
-            <p class="text-subtitle-2 text-muted mt-1">SIGN IN</p>
+            <p class="text-subtitle-2 text-muted mt-1">Join the learning adventure 🚀</p>
           </div>
 
-          <!-- OAuth buttons -->
-          <div class="d-flex flex-column flex-sm-row justify-space-between mb-4">
-            <v-btn
-              variant="outlined"
-              color="white"
-              prepend-icon="mdi-google"
-              class="flex-grow-1 mb-2 mb-sm-0 mr-sm-2"
-            >
-              Google
-            </v-btn>
-            <v-btn
-              variant="outlined"
-              color="white"
-              prepend-icon="mdi-github"
-              class="flex-grow-1 ml-sm-2"
-            >
-              Github
-            </v-btn>
-          </div>
-
-          <div class="text-center text-muted mb-4">— or —</div>
+          <!-- Name -->
+          <v-text-field
+            v-model="name"
+            label="Full Name"
+            placeholder="Enter your full name"
+            variant="outlined"
+            hide-details
+            density="comfortable"
+            class="mb-4"
+          />
 
           <!-- Email -->
           <v-text-field
@@ -62,7 +51,7 @@
           />
 
           <!-- Password -->
-          <v-text-field
+              <v-text-field
             v-model="password"
             :type="showPassword ? 'text' : 'password'"
             label="Password"
@@ -83,30 +72,67 @@
             </template>
           </v-text-field>
 
-          <!-- Remember me / Forgot -->
-          <div class="d-flex justify-space-between align-center mb-4 flex-wrap">
-            <v-checkbox
-              v-model="remember"
-              label="Remember me"
-              density="compact"
-              hide-details
-              class="ma-0 pa-0"
-            />
-            <v-btn variant="text" size="small" class="text-gradient">
-              Forgot password?
-            </v-btn>
-          </div>
 
-          <!-- Sign In Button -->
-          <v-btn color="primary" block large class="sign-in-btn" @click="goDashboard">
-            Sign In
+          <!-- Confirm Password -->
+        <v-text-field
+            v-model="confirmPassword"
+            :type="showConPassword ? 'text' : 'password'"
+            label="Confirm Password"
+            placeholder="Re-enter your password"
+            variant="outlined"
+            hide-details
+            density="comfortable"
+            class="mb-4"
+          >
+            <template #append-inner>
+              <v-icon
+                color="white"
+                class="cursor-pointer"
+                @click="showConPassword = !showConPassword"
+              >
+                {{ showConPassword ? 'mdi-eye-off' : 'mdi-eye' }}
+              </v-icon>
+            </template>
+          </v-text-field>
+          
+
+          <!-- Terms Agreement -->
+          <v-checkbox
+            v-model="agree"
+            density="compact"
+            hide-details
+            class="mb-4 terms-checkbox"
+            >
+            <template #label>
+                <span class="terms-text">
+                I agree to the <a href="#" class="terms-link">Terms of Service</a> and
+                <a href="#" class="terms-link">Privacy Policy</a>
+                </span>
+            </template>
+            </v-checkbox>
+
+          <!-- Create Account -->
+          <v-btn
+            color="primary"
+            block
+            large
+            class="signup-btn"
+            @click="createAccount"
+            :disabled="!agree"
+          >
+            Create Account
           </v-btn>
 
-          <!-- Sign up -->
+          <!-- Login Redirect -->
           <div class="text-center mt-4 text-muted">
-            Don’t have an account?
-            <v-btn variant="text" size="small" class="text-gradient" @click="goSignup">
-              Sign up
+            Already have an account?
+            <v-btn
+              variant="text"
+              size="small"
+              class="text-gradient"
+              @click="goLogin"
+            >
+              Sign in
             </v-btn>
           </div>
         </v-card>
@@ -120,22 +146,31 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const showPassword = ref(false)
+const showConPassword = ref(false)
 
 const router = useRouter()
+const name = ref('')
 const email = ref('')
 const password = ref('')
-const remember = ref(false)
+const confirmPassword = ref('')
+const agree = ref(false)
 
 const goHome = () => router.push('/')
-const goSignup = () => router.push('/signup')
-const goDashboard = () => router.push('/dashboard')
+const goLogin = () => router.push('/login')
+const createAccount = () => {
+  if (!name.value || !email.value || !password.value || password.value !== confirmPassword.value) {
+    alert('Please complete all fields and ensure passwords match.')
+    return
+  }
+  router.push('/dashboard')
+}
 </script>
 
 <style scoped>
 /* -------------------------------
    BACKGROUND
 --------------------------------*/
-.login-page {
+.signup-page {
   position: relative;
   background: radial-gradient(circle at top left, #0d0d0d, #000);
   color: white;
@@ -144,17 +179,16 @@ const goDashboard = () => router.push('/dashboard')
   min-height: 100vh;
 }
 
-/* Scrollable Wrapper */
-.login-scroll-wrapper {
+/* Scrollable container */
+.signup-scroll-wrapper {
   position: relative;
   z-index: 2;
   overflow-y: auto;
   min-height: 100vh;
-  max-height: 100%;
   scroll-behavior: smooth;
 }
 
-/* Floating Glow */
+/* Glow background */
 .glow-bg {
   position: fixed;
   inset: 0;
@@ -174,7 +208,7 @@ const goDashboard = () => router.push('/dashboard')
   width: 300px;
   height: 300px;
   background: var(--brand-red, #e10600);
-  top: 20%;
+  top: 15%;
   left: -15%;
 }
 
@@ -200,9 +234,9 @@ const goDashboard = () => router.push('/dashboard')
 }
 
 /* -------------------------------
-   LOGIN CARD
+   CARD
 --------------------------------*/
-.login-card {
+.signup-card {
   background: rgba(20, 18, 26, 0.85) !important;
   backdrop-filter: blur(14px);
   color: #fff;
@@ -213,7 +247,7 @@ const goDashboard = () => router.push('/dashboard')
   transition: all 0.3s ease;
 }
 
-.login-card:hover {
+.signup-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 0 40px rgba(139, 92, 246, 0.4);
 }
@@ -225,25 +259,49 @@ const goDashboard = () => router.push('/dashboard')
   -webkit-text-fill-color: transparent;
 }
 
-/* Sign In Button */
-.sign-in-btn {
+/* Buttons */
+.signup-btn {
   background: linear-gradient(90deg, var(--brand-red, #e10600), var(--brand-purple, #8b5cf6));
-  color: white;
+  color: #fff;
   font-weight: 600;
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
 }
 
-.sign-in-btn:hover {
+.signup-btn:hover {
   transform: translateY(-2px);
   opacity: 0.9;
+}
+
+/* Terms checkbox refinement */
+.terms-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.terms-text {
+  font-size: 0.75rem; /* smaller */
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.8);
+  white-space: normal;
+}
+
+.terms-link {
+  color: var(--brand-purple, #8b5cf6);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.terms-link:hover {
+  text-decoration: underline;
 }
 
 /* -------------------------------
    RESPONSIVE
 --------------------------------*/
 @media (max-width: 480px) {
-  .login-card {
+  .signup-card {
     padding: 1.25rem !important;
     margin-top: 2rem;
     margin-bottom: 2rem;
