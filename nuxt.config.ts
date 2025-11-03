@@ -10,9 +10,15 @@ export default defineNuxtConfig({
     public: {
       SUPABASE_URL: process.env.SUPABASE_URL,
       SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY
-    }
+    },
+
+    judge0ApiKey: process.env.JUDGE0_API_KEY || '',
+    judge0Url: process.env.JUDGE0_API_URL || 'https://ce.judge0.com',
+    judge0ApiHost: process.env.JUDGE0_API_HOST || '',
   },
   ssr: false,
+ plugins: ['~/plugins/monaco.ts'],
+  
   css: [
     'vuetify/styles',
     '@mdi/font/css/materialdesignicons.min.css',
@@ -22,7 +28,8 @@ export default defineNuxtConfig({
     transpile: ['vuetify']
   },
   vite: {
-    define: { 'process.env.DEBUG': false }
+    define: { 'process.env.DEBUG': false },
+     optimizeDeps: { include: ['monaco-editor'] },
   },
   app: {
     head: {

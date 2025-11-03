@@ -12,7 +12,9 @@
   "dependencies": {
     "@getbrevo/brevo": "^3.0.1",
     "@mdi/font": "^7.4.47",
+    "@monaco-editor/loader": "^1.6.1",
     "@supabase/supabase-js": "^2.78.0",
+    "axios": "^1.13.1",
     "monaco-editor": "^0.54.0",
     "monaco-editor-vue3": "^1.0.4",
     "nuxt": "^4.2.0",
