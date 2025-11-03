@@ -10,11 +10,13 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@getbrevo/brevo": "^3.0.1",
     "@mdi/font": "^7.4.47",
-    "@supabase/supabase-js": "^2.77.0",
+    "@supabase/supabase-js": "^2.78.0",
     "nuxt": "^4.2.0",
     "sass": "^1.93.2",
     "sass-loader": "^16.0.6",
+    "sib-api-v3-typescript": "^2.2.2",
     "vue": "^3.5.22",
     "vue-router": "^4.6.3",
     "vuetify": "^3.10.7"

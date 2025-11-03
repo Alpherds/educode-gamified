@@ -1,113 +1,34 @@
 <template>
   <v-app class="login-page">
-    <!-- Glowing Background -->
-    <div class="glow-bg">
-      <div class="glow-ball red"></div>
-      <div class="glow-ball purple"></div>
-    </div>
-
-    <!-- Scrollable Content -->
     <div class="login-scroll-wrapper">
       <v-container class="d-flex flex-column align-center justify-center px-4 py-10">
         <v-card class="pa-6 pa-sm-8 rounded-xl login-card mx-auto" elevation="10">
-          <!-- Logo + Title -->
           <div class="text-center mb-6">
-            <v-avatar
-              size="64"
-              class="mb-3 logo-avatar"
-              color="transparent"
-              @click="goHome"
-              style="cursor: pointer"
-            >
+            <v-avatar size="64" class="mb-3 logo-avatar" color="transparent" @click="goHome" style="cursor:pointer">
               <v-icon size="40" color="primary">mdi-code-tags</v-icon>
             </v-avatar>
-
-            <h2 class="text-h5 font-weight-bold">
-              Online IDE <span class="text-gradient">Pro</span>
-            </h2>
-            <p class="text-subtitle-2 text-muted mt-1">SIGN IN</p>
+            <h2 class="text-h5 font-weight-bold">EduCode</h2>
+            <p class="text-subtitle-2 text-muted mt-1">Sign in to continue</p>
           </div>
 
-          <!-- OAuth buttons -->
-          <div class="d-flex flex-column flex-sm-row justify-space-between mb-4">
-            <v-btn
-              variant="outlined"
-              color="white"
-              prepend-icon="mdi-google"
-              class="flex-grow-1 mb-2 mb-sm-0 mr-sm-2"
-            >
-              Google
-            </v-btn>
-            <v-btn
-              variant="outlined"
-              color="white"
-              prepend-icon="mdi-github"
-              class="flex-grow-1 ml-sm-2"
-            >
-              Github
-            </v-btn>
-          </div>
+          <v-alert v-if="errorMsg" type="error" dense class="mb-4">{{ errorMsg }}</v-alert>
 
-          <div class="text-center text-muted mb-4">— or —</div>
-
-          <!-- Email -->
-          <v-text-field
-            v-model="email"
-            label="Email"
-            placeholder="Enter your email"
-            variant="outlined"
-            hide-details
-            density="comfortable"
-            class="mb-4"
-          />
-
-          <!-- Password -->
-          <v-text-field
-            v-model="password"
-            :type="showPassword ? 'text' : 'password'"
-            label="Password"
-            placeholder="Enter your password"
-            variant="outlined"
-            hide-details
-            density="comfortable"
-            class="mb-4"
-          >
+          <v-text-field v-model="email" label="Email" placeholder="Enter your email" variant="outlined" hide-details density="comfortable" class="mb-4" />
+          <v-text-field v-model="password" :type="showPassword ? 'text' : 'password'" label="Password" placeholder="Enter password" variant="outlined" hide-details density="comfortable" class="mb-4">
             <template #append-inner>
-              <v-icon
-                color="white"
-                class="cursor-pointer"
-                @click="showPassword = !showPassword"
-              >
-                {{ showPassword ? 'mdi-eye-off' : 'mdi-eye' }}
-              </v-icon>
+              <v-icon class="cursor-pointer" @click="showPassword = !showPassword">{{ showPassword ? 'mdi-eye-off' : 'mdi-eye' }}</v-icon>
             </template>
           </v-text-field>
 
-          <!-- Remember me / Forgot -->
           <div class="d-flex justify-space-between align-center mb-4 flex-wrap">
-            <v-checkbox
-              v-model="remember"
-              label="Remember me"
-              density="compact"
-              hide-details
-              class="ma-0 pa-0"
-            />
-            <v-btn variant="text" size="small" class="text-gradient">
-              Forgot password?
-            </v-btn>
+            <v-checkbox v-model="remember" label="Remember me" density="compact" hide-details class="ma-0 pa-0" />
+            <v-btn variant="text" size="small" class="text-gradient" @click="goReset">Forgot password?</v-btn>
           </div>
 
-          <!-- Sign In Button -->
-          <v-btn color="primary" block large class="sign-in-btn" @click="goDashboard">
-            Sign In
-          </v-btn>
+          <v-btn :loading="loading" color="primary" block large class="sign-in-btn mb-3" @click="signIn">Sign In</v-btn>
 
-          <!-- Sign up -->
-          <div class="text-center mt-4 text-muted">
-            Don’t have an account?
-            <v-btn variant="text" size="small" class="text-gradient" @click="goSignup">
-              Sign up
-            </v-btn>
+          <div class="text-center mt-4 text-muted">Don’t have an account?
+            <v-btn variant="text" size="small" class="text-gradient" @click="goSignup">Sign up</v-btn>
           </div>
         </v-card>
       </v-container>
@@ -118,18 +39,41 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-
-const showPassword = ref(false)
+import type { SupabaseClient } from '@supabase/supabase-js'
 
 const router = useRouter()
+const nuxtApp = useNuxtApp()
+const $supabase = nuxtApp.$supabase as SupabaseClient
+
 const email = ref('')
 const password = ref('')
 const remember = ref(false)
+const showPassword = ref(false)
+const loading = ref(false)
+const errorMsg = ref('')
 
 const goHome = () => router.push('/')
 const goSignup = () => router.push('/signup')
+const goReset = () => router.push('/reset')
 const goDashboard = () => router.push('/dashboard')
+
+const signIn = async () => {
+  errorMsg.value = ''
+  if (!email.value || !password.value) {
+    errorMsg.value = 'Please enter email and password.'
+    return
+  }
+  loading.value = true
+  const { error } = await $supabase.auth.signInWithPassword({ email: email.value, password: password.value })
+  loading.value = false
+  if (error) {
+    errorMsg.value = error.message
+    return
+  }
+  goDashboard()
+}
 </script>
+
 
 <style scoped>
 /* -------------------------------
