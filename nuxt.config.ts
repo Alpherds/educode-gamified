@@ -3,10 +3,10 @@ import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
   runtimeConfig: {
-    // server-only (do NOT expose service role key to the client)
+    // server-only secret (do NOT expose to client)
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
 
-    // publicly accessible to client
+    // public keys exposed to client
     public: {
       SUPABASE_URL: process.env.SUPABASE_URL,
       SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY

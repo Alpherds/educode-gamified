@@ -1,5 +1,5 @@
-// types/supabase.d.ts
-import type { SupabaseClient } from '@supabase/supabase-js'
+// types/nuxt-supabase.d.ts
+import { SupabaseClient } from '@supabase/supabase-js'
 
 declare module '#app' {
   interface NuxtApp {
