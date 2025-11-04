@@ -76,7 +76,7 @@ const goLogin = () => router.push('/login')
 
 .hero-right {
   flex: 1;
-  max-width: 600px;
+  max-width: 500px;
 }
 
 .hero-monitor {
@@ -87,7 +87,7 @@ const goLogin = () => router.push('/login')
 }
 
 .hero-title {
-  font-size: 7rem;
+  font-size: 5rem;
   font-weight: 800;
   line-height: 1.1;
   margin-bottom: 1.2rem;
