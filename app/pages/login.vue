@@ -1,255 +1,85 @@
-<!-- <template>
-  <v-app class="login-page">
-    <div class="login-scroll-wrapper">
-      <v-container class="d-flex flex-column align-center justify-center px-4 py-10">
-        <v-card class="pa-6 pa-sm-8 rounded-xl login-card mx-auto" elevation="10">
-          <div class="text-center mb-6">
-            <v-avatar size="64" class="mb-3 logo-avatar" color="transparent" @click="goHome" style="cursor:pointer">
-              <v-icon size="40" color="primary">mdi-code-tags</v-icon>
-            </v-avatar>
-            <h2 class="text-h5 font-weight-bold">EduCode</h2>
-            <p class="text-subtitle-2 text-muted mt-1">Sign in to continue</p>
-          </div>
-
-          <v-alert v-if="errorMsg" type="error" dense class="mb-4">{{ errorMsg }}</v-alert>
-
-          <v-text-field v-model="email" label="Email" placeholder="Enter your email" variant="outlined" hide-details density="comfortable" class="mb-4" />
-          <v-text-field v-model="password" :type="showPassword ? 'text' : 'password'" label="Password" placeholder="Enter password" variant="outlined" hide-details density="comfortable" class="mb-4">
-            <template #append-inner>
-              <v-icon class="cursor-pointer" @click="showPassword = !showPassword">{{ showPassword ? 'mdi-eye-off' : 'mdi-eye' }}</v-icon>
-            </template>
-          </v-text-field>
-
-          <div class="d-flex justify-space-between align-center mb-4 flex-wrap">
-            <v-checkbox v-model="remember" label="Remember me" density="compact" hide-details class="ma-0 pa-0" />
-            <v-btn variant="text" size="small" class="text-gradient" @click="goReset">Forgot password?</v-btn>
-          </div>
-
-          <v-btn :loading="loading" color="primary" block large class="sign-in-btn mb-3" @click="signIn">Sign In</v-btn>
-
-          <div class="text-center mt-4 text-muted">Don’t have an account?
-            <v-btn variant="text" size="small" class="text-gradient" @click="goSignup">Sign up</v-btn>
-          </div>
-        </v-card>
-      </v-container>
-    </div>
-  </v-app>
-</template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import type { SupabaseClient } from '@supabase/supabase-js'
-
-const router = useRouter()
-const nuxtApp = useNuxtApp()
-const $supabase = nuxtApp.$supabase as SupabaseClient
-
-const email = ref('')
-const password = ref('')
-const remember = ref(false)
-const showPassword = ref(false)
-const loading = ref(false)
-const errorMsg = ref('')
-
-const goHome = () => router.push('/')
-const goSignup = () => router.push('/signup')
-const goReset = () => router.push('/reset')
-const goDashboard = () => router.push('/dashboard')
-
-const signIn = async () => {
-  errorMsg.value = ''
-  if (!email.value || !password.value) {
-    errorMsg.value = 'Please enter email and password.'
-    return
-  }
-  loading.value = true
-  const { error } = await $supabase.auth.signInWithPassword({ email: email.value, password: password.value })
-  loading.value = false
-  if (error) {
-    errorMsg.value = error.message
-    return
-  }
-  goDashboard()
-}
-</script>
-
-
-<style scoped>
-/* -------------------------------
-   BACKGROUND
---------------------------------*/
-.login-page {
-  position: relative;
-  background: radial-gradient(circle at top left, #0d0d0d, #000);
-  color: white;
-  font-family: 'Inter', sans-serif;
-  overflow: hidden;
-  min-height: 100vh;
-}
-
-/* Scrollable Wrapper */
-.login-scroll-wrapper {
-  position: relative;
-  z-index: 2;
-  overflow-y: auto;
-  min-height: 100vh;
-  max-height: 100%;
-  scroll-behavior: smooth;
-}
-
-/* Floating Glow */
-.glow-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-}
-
-.glow-ball {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.6;
-  animation: float 2s ease-in-out infinite alternate;
-}
-
-.glow-ball.red {
-  width: 300px;
-  height: 300px;
-  background: var(--brand-red, #e10600);
-  top: 20%;
-  left: -15%;
-}
-
-.glow-ball.purple {
-  width: 360px;
-  height: 360px;
-  background: var(--brand-purple, #8b5cf6);
-  bottom: 10%;
-  right: -20%;
-  animation-delay: 1s;
-}
-
-@keyframes float {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(25px, -25px) scale(1.05);
-  }
-  100% {
-    transform: translate(-20px, 20px) scale(1);
-  }
-}
-
-/* -------------------------------
-   LOGIN CARD
---------------------------------*/
-.login-card {
-  background: rgba(20, 18, 26, 0.85) !important;
-  backdrop-filter: blur(14px);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 25px rgba(139, 92, 246, 0.25);
-  width: 100%;
-  max-width: 420px;
-  transition: all 0.3s ease;
-}
-
-.login-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 0 40px rgba(139, 92, 246, 0.4);
-}
-
-/* Gradient text */
-.text-gradient {
-  background: linear-gradient(90deg, var(--brand-red, #e10600), var(--brand-purple, #8b5cf6));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Sign In Button */
-.sign-in-btn {
-  background: linear-gradient(90deg, var(--brand-red, #e10600), var(--brand-purple, #8b5cf6));
-  color: white;
-  font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-}
-
-.sign-in-btn:hover {
-  transform: translateY(-2px);
-  opacity: 0.9;
-}
-
-/* -------------------------------
-   RESPONSIVE
---------------------------------*/
-@media (max-width: 480px) {
-  .login-card {
-    padding: 1.25rem !important;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .glow-ball.red {
-    width: 180px;
-    height: 180px;
-    left: -25%;
-  }
-
-  .glow-ball.purple {
-    width: 220px;
-    height: 220px;
-    right: -25%;
-  }
-}
-</style> -->
-
-
 <template>
   <v-app class="login-page">
-    <div class="login-scroll-wrapper">
-      <v-container class="d-flex flex-column align-center justify-center px-4 py-10">
-        <v-card class="pa-6 pa-sm-8 rounded-xl login-card mx-auto" elevation="10">
-          <div class="text-center mb-6">
-            <v-avatar size="64" class="mb-3 logo-avatar" color="transparent" @click="goHome" style="cursor:pointer">
-              <v-icon size="40" color="primary">mdi-code-tags</v-icon>
-            </v-avatar>
+    <v-container class="d-flex align-center justify-center px-4">
+      <v-card class="pa-6 pa-sm-8 rounded-xl login-card mx-auto" elevation="10">
+        <div class="text-center mb-6">
+          <v-avatar
+            size="64"
+            class="mb-3 logo-avatar"
+            color="transparent"
+            @click="goHome"
+            style="cursor:pointer"
+          >
+            <v-icon size="40" color="orange">mdi-code-tags</v-icon>
+          </v-avatar>
 
-            <h2 class="text-h5 font-weight-bold">
-              Online IDE <span class="text-gradient">Pro</span>
-            </h2>
-            <p class="text-subtitle-2 text-muted mt-1">SIGN IN</p>
-          </div>
+          <h2 class="text-h5 font-weight-bold">
+            Online IDE <span class="text-gradient">Pro</span>
+          </h2>
+          <p class="text-subtitle-2 mt-1" style="opacity:0.8">Welcome back</p>
+        </div>
 
-          <v-alert v-if="errorMsg" type="error" dense class="mb-4">{{ errorMsg }}</v-alert>
+        <v-alert v-if="errorMsg" type="error" dense class="mb-4">{{ errorMsg }}</v-alert>
 
-          <v-text-field v-model="email" label="Email" placeholder="Enter your email" variant="outlined" hide-details density="comfortable" class="mb-4" />
+        <v-text-field
+          v-model="email"
+          label="Email"
+          placeholder="Enter your email"
+          variant="outlined"
+          hide-details
+          density="comfortable"
+          class="mb-4"
+        />
 
-          <v-text-field v-model="password" :type="showPassword ? 'text' : 'password'" label="Password" placeholder="Enter your password" variant="outlined" hide-details density="comfortable" class="mb-4">
-            <template #append-inner>
-              <v-icon color="white" class="cursor-pointer" @click="showPassword = !showPassword">
-                {{ showPassword ? 'mdi-eye-off' : 'mdi-eye' }}
-              </v-icon>
-            </template>
-          </v-text-field>
+        <v-text-field
+          v-model="password"
+          :type="showPassword ? 'text' : 'password'"
+          label="Password"
+          placeholder="Enter your password"
+          variant="outlined"
+          hide-details
+          density="comfortable"
+          class="mb-4"
+        >
+          <template #append-inner>
+            <v-icon color="white" class="cursor-pointer" @click="showPassword = !showPassword">
+              {{ showPassword ? 'mdi-eye-off' : 'mdi-eye' }}
+            </v-icon>
+          </template>
+        </v-text-field>
 
-          <div class="d-flex justify-space-between align-center mb-4 flex-wrap">
-            <v-checkbox v-model="remember" label="Remember me" density="compact" hide-details class="ma-0 pa-0" />
-            <v-btn variant="text" size="small" class="text-gradient" @click="goReset">Forgot password?</v-btn>
-          </div>
+        <div class="d-flex justify-space-between align-center mb-4 flex-wrap">
+          <v-checkbox
+            v-model="remember"
+            label="Remember me"
+            density="compact"
+            hide-details
+            class="ma-0 pa-0"
+          />
+          <v-btn variant="text" size="small" class="text-gradient" @click="goReset">
+            Forgot password?
+          </v-btn>
+        </div>
 
-          <v-btn :loading="loading" color="primary" block large class="sign-in-btn" @click="login">Sign In</v-btn>
+        <v-btn
+          :loading="loading"
+          color="primary"
+          block
+          large
+          class="login-btn mb-3"
+          @click="login"
+        >
+          Sign In
+        </v-btn>
 
-          <div class="text-center mt-4 text-muted">
-            Don’t have an account?
-            <v-btn variant="text" size="small" class="text-gradient" @click="goSignup">Sign up</v-btn>
-          </div>
-        </v-card>
-      </v-container>
-    </div>
+        <div class="text-center mt-4 terms-text">
+          Don’t have an account?
+          <v-btn variant="text" size="small" class="text-gradient" @click="goSignup">
+            Sign up
+          </v-btn>
+        </div>
+      </v-card>
+    </v-container>
   </v-app>
 </template>
 
@@ -275,152 +105,140 @@ const goReset = () => router.push('/reset')
 const login = async () => {
   errorMsg.value = ''
   loading.value = true
-  const { data, error } = await $supabase.auth.signInWithPassword({
+  const { error } = await $supabase.auth.signInWithPassword({
     email: email.value,
-    password: password.value
+    password: password.value,
   })
   loading.value = false
-
   if (error) {
     errorMsg.value = error.message
     return
   }
-
-  // success -> go to dashboard
   router.push('/dashboard')
 }
 </script>
 
-
 <style scoped>
 /* -------------------------------
-   BACKGROUND
+   PAGE LAYOUT
 --------------------------------*/
 .login-page {
-  position: relative;
-  background: radial-gradient(circle at top left, #0d0d0d, #000);
-  color: white;
-  font-family: 'Inter', sans-serif;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-height: 100vh;
-}
-
-/* Scrollable Wrapper */
-.login-scroll-wrapper {
-  position: relative;
-  z-index: 2;
-  overflow-y: auto;
-  min-height: 100vh;
-  max-height: 100%;
-  scroll-behavior: smooth;
-}
-
-/* Floating Glow */
-.glow-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
+  background: radial-gradient(circle at 20% 20%, #0b0c14 0%, #05060a 100%);
   overflow: hidden;
+  font-family: "Inter", sans-serif;
+  color: #fff;
+  position: relative;
 }
 
-.glow-ball {
+/* Background Glow */
+.login-page::before {
+  content: "";
   position: absolute;
-  border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.6;
-  animation: float 2s ease-in-out infinite alternate;
-}
-
-.glow-ball.red {
-  width: 300px;
-  height: 300px;
-  background: var(--brand-red, #e10600);
-  top: 20%;
-  left: -15%;
-}
-
-.glow-ball.purple {
-  width: 360px;
-  height: 360px;
-  background: var(--brand-purple, #8b5cf6);
-  bottom: 10%;
-  right: -20%;
-  animation-delay: 1s;
-}
-
-@keyframes float {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(25px, -25px) scale(1.05);
-  }
-  100% {
-    transform: translate(-20px, 20px) scale(1);
-  }
+  inset: 0;
+  background: 
+    radial-gradient(circle at top left, rgba(255, 136, 0, 0.15), transparent 60%),
+    radial-gradient(circle at bottom right, rgba(255, 102, 0, 0.12), transparent 60%);
+  filter: blur(90px);
+  z-index: 0;
 }
 
 /* -------------------------------
-   LOGIN CARD
+   CARD DESIGN
 --------------------------------*/
 .login-card {
-  background: rgba(20, 18, 26, 0.85) !important;
-  backdrop-filter: blur(14px);
-  color: #fff;
+  background: rgba(20, 22, 30, 0.85) !important;
+  backdrop-filter: blur(18px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 25px rgba(139, 92, 246, 0.25);
+  box-shadow: 0 0 60px rgba(255, 140, 0, 0.25);
+  border-radius: 18px;
+  padding: 2.5rem !important;
   width: 100%;
   max-width: 420px;
-  transition: all 0.3s ease;
+  z-index: 3;
+  animation: fadeUp 0.6s ease-out;
+  position: relative;
 }
 
 .login-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 0 40px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 0 80px rgba(255, 165, 0, 0.3);
 }
 
-/* Gradient text */
+/* Gradient Text */
 .text-gradient {
-  background: linear-gradient(90deg, var(--brand-red, #e10600), var(--brand-purple, #8b5cf6));
+  background: linear-gradient(90deg, #ffa500, #ff6700);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* Sign In Button */
-.sign-in-btn {
-  background: linear-gradient(90deg, var(--brand-red, #e10600), var(--brand-purple, #8b5cf6));
-  color: white;
-  font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+/* Icon Avatar */
+.logo-avatar {
+  border: 2px solid rgba(255, 165, 0, 0.3);
+  box-shadow: 0 0 20px rgba(255, 165, 0, 0.25);
+  transition: transform 0.3s ease;
+}
+.logo-avatar:hover {
+  transform: rotate(10deg) scale(1.1);
 }
 
-.sign-in-btn:hover {
+/* Input Fields */
+.v-text-field {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+.v-text-field input {
+  color: #fff !important;
+}
+.v-field--focused {
+  border-color: #ffa500 !important;
+}
+
+/* Button */
+.login-btn {
+  background: linear-gradient(90deg, #ffa500, #ff6700);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(255, 165, 0, 0.25);
+}
+.login-btn:hover {
   transform: translateY(-2px);
-  opacity: 0.9;
+  box-shadow: 0 0 30px rgba(255, 165, 0, 0.45);
+}
+
+/* Terms */
+.terms-text {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Animation */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* -------------------------------
    RESPONSIVE
 --------------------------------*/
-@media (max-width: 480px) {
+@media (max-width: 960px) {
+  .login-page {
+    padding: 1rem;
+  }
   .login-card {
-    padding: 1.25rem !important;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .glow-ball.red {
-    width: 180px;
-    height: 180px;
-    left: -25%;
-  }
-
-  .glow-ball.purple {
-    width: 220px;
-    height: 220px;
-    right: -25%;
+    padding: 1.8rem !important;
   }
 }
-</style> 
+</style>
 
